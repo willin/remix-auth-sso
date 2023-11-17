@@ -18,13 +18,13 @@ Follow the steps on [the SSO documentation](https://github.com/willin/sso) to cr
 ### Create the strategy instance
 
 ```ts
-import { SSOStrategy } from 'remix-auth-afdian';
+import { SSOStrategy } from 'remix-auth-sso';
 
 let ssoStrategy = new SSOStrategy(
   {
     clientID: 'YOUR_CLIENT_ID',
     clientSecret: 'YOUR_CLIENT_SECRET',
-    callbackURL: 'https://example.com/auth/afdian/callback'
+    callbackURL: 'https://example.com/auth/sso/callback'
   },
   async ({ accessToken, extraParams, profile }) => {
     // Get the user data from your DB or API using the tokens and profile

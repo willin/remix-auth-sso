@@ -1,6 +1,6 @@
 {
   "name": "remix-auth-sso",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "SSO for Remix Auth",
   "main": ",/build/index.js",
   "module": "./build/index.js",
