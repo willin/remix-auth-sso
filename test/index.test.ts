@@ -1,129 +1,129 @@
-import { createCookieSessionStorage } from "@remix-run/node";
-import { AuthenticateOptions } from "remix-auth";
-import { AfdianStrategy } from "../src";
+import { createCookieSessionStorage } from '@remix-run/node';
+import { AuthenticateOptions } from 'remix-auth';
+import { SSOStrategy } from '../src';
 
 const BASE_OPTIONS: AuthenticateOptions = {
-  name: "form",
-  sessionKey: "user",
-  sessionErrorKey: "error",
-  sessionStrategyKey: "strategy",
+  name: 'form',
+  sessionKey: 'user',
+  sessionErrorKey: 'error',
+  sessionStrategyKey: 'strategy'
 };
 
-describe(AfdianStrategy, () => {
+describe('SSOStrategy', () => {
   let verify = jest.fn();
   let sessionStorage = createCookieSessionStorage({
-    cookie: { secrets: ["s3cr3t"] },
+    cookie: { secrets: ['s3cr3t'] }
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
-  test("should allow changing the scope", async () => {
-    let strategy = new AfdianStrategy(
+  test('should allow changing the scope', async () => {
+    let strategy = new SSOStrategy(
       {
-        clientID: "CLIENT_ID",
-        clientSecret: "CLIENT_SECRET",
-        callbackURL: "https://example.app/callback",
-        scope: "custom",
+        clientID: 'CLIENT_ID',
+        clientSecret: 'CLIENT_SECRET',
+        callbackURL: 'https://example.app/callback',
+        scope: 'custom'
       },
       verify
     );
 
-    let request = new Request("https://example.app/auth/afdian");
+    let request = new Request('https://example.app/auth/sso');
 
     try {
       await strategy.authenticate(request, sessionStorage, BASE_OPTIONS);
     } catch (error) {
       if (!(error instanceof Response)) throw error;
-      let location = error.headers.get("Location");
+      let location = error.headers.get('Location');
 
-      if (!location) throw new Error("No redirect header");
+      if (!location) throw new Error('No redirect header');
 
       let redirectUrl = new URL(location);
 
-      expect(redirectUrl.searchParams.get("scope")).toBe("custom");
+      expect(redirectUrl.searchParams.get('scope')).toBe('custom');
     }
   });
 
-  test("should allow typed scope array", async () => {
-    let strategy = new AfdianStrategy(
+  test('should allow typed scope array', async () => {
+    let strategy = new SSOStrategy(
       {
-        clientID: "CLIENT_ID",
-        clientSecret: "CLIENT_SECRET",
-        callbackURL: "https://example.app/callback",
-        scope: ["read:user"],
+        clientID: 'CLIENT_ID',
+        clientSecret: 'CLIENT_SECRET',
+        callbackURL: 'https://example.app/callback',
+        scope: ['read:user']
       },
       verify
     );
 
-    let request = new Request("https://example.app/auth/afdian");
+    let request = new Request('https://example.app/auth/sso');
 
     try {
       await strategy.authenticate(request, sessionStorage, BASE_OPTIONS);
     } catch (error) {
       if (!(error instanceof Response)) throw error;
-      let location = error.headers.get("Location");
+      let location = error.headers.get('Location');
 
-      if (!location) throw new Error("No redirect header");
+      if (!location) throw new Error('No redirect header');
 
       let redirectUrl = new URL(location);
 
-      expect(redirectUrl.searchParams.get("scope")).toBe("read:user");
+      expect(redirectUrl.searchParams.get('scope')).toBe('read:user');
     }
   });
 
-  test("should have the scope `basic` as default", async () => {
-    let strategy = new AfdianStrategy(
+  test('should have the scope `basic` as default', async () => {
+    let strategy = new SSOStrategy(
       {
-        clientID: "CLIENT_ID",
-        clientSecret: "CLIENT_SECRET",
-        callbackURL: "https://example.app/callback",
+        clientID: 'CLIENT_ID',
+        clientSecret: 'CLIENT_SECRET',
+        callbackURL: 'https://example.app/callback'
       },
       verify
     );
 
-    let request = new Request("https://example.app/auth/afdian");
+    let request = new Request('https://example.app/auth/sso');
 
     try {
       await strategy.authenticate(request, sessionStorage, BASE_OPTIONS);
     } catch (error) {
       if (!(error instanceof Response)) throw error;
-      let location = error.headers.get("Location");
+      let location = error.headers.get('Location');
 
-      if (!location) throw new Error("No redirect header");
+      if (!location) throw new Error('No redirect header');
 
       let redirectUrl = new URL(location);
 
-      expect(redirectUrl.searchParams.get("scope")).toBe("basic");
+      expect(redirectUrl.searchParams.get('scope')).toBe('basic');
     }
   });
 
-  test("should correctly format the authorization URL", async () => {
-    let strategy = new AfdianStrategy(
+  test('should correctly format the authorization URL', async () => {
+    let strategy = new SSOStrategy(
       {
-        clientID: "CLIENT_ID",
-        clientSecret: "CLIENT_SECRET",
-        callbackURL: "https://example.app/callback",
+        clientID: 'CLIENT_ID',
+        clientSecret: 'CLIENT_SECRET',
+        callbackURL: 'https://example.app/callback'
       },
       verify
     );
 
-    let request = new Request("https://example.app/auth/afdian");
+    let request = new Request('https://example.app/auth/sso');
 
     try {
       await strategy.authenticate(request, sessionStorage, BASE_OPTIONS);
     } catch (error) {
       if (!(error instanceof Response)) throw error;
 
-      let location = error.headers.get("Location");
+      let location = error.headers.get('Location');
 
-      if (!location) throw new Error("No redirect header");
+      if (!location) throw new Error('No redirect header');
 
       let redirectUrl = new URL(location);
 
-      expect(redirectUrl.hostname).toBe("afdian.net");
-      expect(redirectUrl.pathname).toBe("/oauth2/authorize");
+      expect(redirectUrl.hostname).toBe('sso.willin.wang');
+      expect(redirectUrl.pathname).toBe('/authorize');
     }
   });
 });
