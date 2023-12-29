@@ -1,9 +1,8 @@
 {
   "name": "remix-auth-sso",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "SSO for Remix Auth",
   "main": ",/build/index.js",
-  "module": "./build/index.js",
   "types": ",/build/index.d.ts",
   "scripts": {
     "prepare": "npm run build",
